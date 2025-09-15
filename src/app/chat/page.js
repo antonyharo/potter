@@ -1,5 +1,7 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useState, useRef, useEffect } from "react";
 
 export default function Page() {
@@ -86,53 +88,49 @@ export default function Page() {
   }
 
   return (
-    <div>
-      <div className="overflow-hidden">
-        <header className="p-4 flex items-center justify-between">
-          <h1 className="text-2xl font-semibold">Harry Potter</h1>
-        </header>
+    <>
+      <div className="h-screen p-8 overflow-hidden space-y-6">
+        <h1 className="text-3xl font-bold">Harry Potter ✨🪄</h1>
 
-        <main className="p-4 h-[60vh] overflow-y-auto" aria-live="polite">
+        <main className="h-[70vh] overflow-y-auto" aria-live="polite">
           <div className="space-y-4">
             {messages.map((m) => (
               <div
                 key={m.id}
-                className={`max-w-[85%] ${
-                  m.role === "user" ? "ml-auto text-right" : "mr-auto text-left"
+                className={`flex w-full ${
+                  m.role === "user" ? "justify-end" : "justify-start"
                 }`}
               >
-                <div
-                  className={`inline-block p-3 rounded-xl ${
-                    m.role === "user"
-                      ? "bg-indigo-600 text-white"
-                      : "bg-gray-100 text-gray-900"
-                  }`}
+                <p
+                  className={`max-w-[90%] sm:max-w-[80%] md:max-w-[70%] lg:max-w-[60%] 
+                    break-words rounded-xl px-3 py-2 text-md 
+                    ${
+                      m.role === "user"
+                        ? "bg-zinc-900 text-white"
+                        : "border border-zinc-900 text-zinc-900"
+                    }`}
                 >
-                  <div className="text-sm whitespace-pre-wrap">{m.text}</div>
-                </div>
+                  {m.text}
+                </p>
               </div>
             ))}
             <div ref={endRef} />
           </div>
         </main>
 
-        <form onSubmit={handleSend} className="p-4 flex gap-3">
-          <input
+        <form onSubmit={handleSend} className="flex gap-3">
+          <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="flex-1 rounded-xl border px-4 py-2 focus:outline-none focus:ring"
+            className="flex-1 "
             placeholder="Escreva sua mensagem..."
             aria-label="Mensagem"
           />
-          <button
-            type="submit"
-            disabled={loading}
-            className="px-4 py-2 rounded-xl bg-indigo-600 text-white disabled:opacity-50"
-          >
+          <Button disabled={loading} type="submit">
             {loading ? "Enviando..." : "Enviar"}
-          </button>
+          </Button>
         </form>
       </div>
-    </div>
+    </>
   );
 }
