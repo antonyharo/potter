@@ -6,6 +6,7 @@ export default function Home() {
       <Link href={"/characters"}>Characters</Link>
       <Link href={"/potions"}>Potions</Link>
       <Link href={"/spells"}>Spells</Link>
+      <Link href={"/chat"}>Chat</Link>
     </div>
   );
 }
