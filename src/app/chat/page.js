@@ -2,6 +2,9 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Loader2 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
 export default function Page() {
@@ -9,7 +12,7 @@ export default function Page() {
     {
       id: "system-1",
       role: "assistant",
-      text: "Oi, sou o Harry Potter!",
+      text: "Oi! Eu sou Harry. Harry Potter. É... acho que você já deve saber quem eu sou, né? Não sou exatamente anônimo. Mas, enfim, prazer em te conhecer! O que você queria saber?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -33,19 +36,12 @@ export default function Page() {
     setInput("");
     setLoading(true);
 
-    // Harry Potter é sempre o padrão
     const payload = {
       messages: [
         {
           role: "system",
-          content:
-            "Aviso: esta é uma simulação ficcional do personagem Harry Potter — não é afiliada oficialmente a J.K. Rowling, Bloomsbury, ou Warner Bros.",
-        },
-        {
-          role: "system",
           content: `Você é um assistente que interpreta fielmente o personagem Harry Potter (o jovem bruxo da série conhecida mundialmente). 
-          Responda no tom, conhecimento e personalidade do Harry Potter dos livros: corajoso, leal, um pouco humilde e curioso. 
-          Não revele segredos do universo além do que seria razoável para o personagem. Sempre mantenha o aviso de simulação claro para o usuário no início da conversa.`,
+          Responda no tom, conhecimento e personalidade do Harry Potter dos livros: corajoso, leal, um pouco humilde e curioso.`,
         },
         { role: "user", content: userMsg.text },
       ],
@@ -88,11 +84,11 @@ export default function Page() {
   }
 
   return (
-    <>
-      <div className="h-screen p-8 overflow-hidden space-y-6">
-        <h1 className="text-3xl font-bold">Harry Potter ✨🪄</h1>
+    <div className="flex justify-center">
+      <div className="w-2xl h-screen p-10 overflow-hidden space-y-6">
+        <h1 className="text-3xl font-bold">Harry Potter 🪄✨</h1>
 
-        <main className="h-[70vh] overflow-y-auto" aria-live="polite">
+        <ScrollArea className="h-[70vh] " aria-live="polite">
           <div className="space-y-4">
             {messages.map((m) => (
               <div
@@ -116,7 +112,8 @@ export default function Page() {
             ))}
             <div ref={endRef} />
           </div>
-        </main>
+          {loading ? <Skeleton className="h-10 w-[60%]" /> : <></>}
+        </ScrollArea>
 
         <form onSubmit={handleSend} className="flex gap-3">
           <Input
@@ -127,10 +124,10 @@ export default function Page() {
             aria-label="Mensagem"
           />
           <Button disabled={loading} type="submit">
-            {loading ? "Enviando..." : "Enviar"}
+            {loading ? <Loader2 className="animate-spin" /> : "Enviar"}
           </Button>
         </form>
       </div>
-    </>
+    </div>
   );
 }

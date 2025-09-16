@@ -23,7 +23,7 @@ export async function POST(req) {
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
     // Converte o array de mensagens para o formato aceito pelo SDK:
     // cada item vira um 'content' com partes de texto
