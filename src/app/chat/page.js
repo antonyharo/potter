@@ -40,8 +40,7 @@ export default function Page() {
       messages: [
         {
           role: "system",
-          content: `Você é um assistente que interpreta fielmente o personagem Harry Potter (o jovem bruxo da série conhecida mundialmente). 
-          Responda no tom, conhecimento e personalidade do Harry Potter dos livros: corajoso, leal, um pouco humilde e curioso.`,
+          content: `Você é um assistente que interpreta fielmente o personagem Harry Potter.`,
         },
         { role: "user", content: userMsg.text },
       ],
@@ -54,29 +53,19 @@ export default function Page() {
         body: JSON.stringify(payload),
       });
 
-      if (!res.ok) {
-        const text = await res.text();
-        addMessage({
-          id: `a-error-${Date.now()}`,
-          role: "assistant",
-          text: `Erro do servidor: ${res.status} ${text}`,
-        });
-        setLoading(false);
-        return;
-      }
+      if (!res.ok) throw new Error(`Erro: ${res.status}`);
 
       const data = await res.json();
-      const assistantText = data.text ?? "Desculpe, não recebi resposta.";
       addMessage({
         id: `a-${Date.now()}`,
         role: "assistant",
-        text: assistantText,
+        text: data.text ?? "Desculpe, não recebi resposta.",
       });
     } catch (err) {
       addMessage({
         id: `a-ex-${Date.now()}`,
         role: "assistant",
-        text: `Erro ao chamar a API: ${err?.message ?? String(err)}`,
+        text: `Erro ao chamar a API: ${err.message ?? String(err)}`,
       });
     } finally {
       setLoading(false);
@@ -84,50 +73,53 @@ export default function Page() {
   }
 
   return (
-    <div className="flex justify-center">
-      <div className="w-2xl h-screen p-10 overflow-hidden space-y-6">
-        <h1 className="text-3xl font-bold">Harry Potter 🪄✨</h1>
+    <div className="relative min-h-screen mx-auto flex flex-col border rounded-xl">
+      {/* header */}
+      <h1 className="p-4 text-2xl font-bold border-b">Harry Potter 🪄✨</h1>
 
-        <ScrollArea className="h-[70vh] " aria-live="polite">
-          <div className="space-y-4">
-            {messages.map((m) => (
-              <div
-                key={m.id}
-                className={`flex w-full ${
-                  m.role === "user" ? "justify-end" : "justify-start"
-                }`}
+      {/* mensagens */}
+      <ScrollArea className="flex-1 p-4 pb-28">
+        <div className="space-y-4">
+          {messages.map((m) => (
+            <div
+              key={m.id}
+              className={`flex ${
+                m.role === "user" ? "justify-end" : "justify-start"
+              }`}
+            >
+              <p
+                className={`max-w-[85%] break-words rounded-xl px-4 py-2 text-md shadow-sm
+                  ${
+                    m.role === "user"
+                      ? "bg-zinc-900 text-white"
+                      : "bg-zinc-100 text-zinc-900"
+                  }`}
               >
-                <p
-                  className={`max-w-[90%] sm:max-w-[80%] md:max-w-[70%] lg:max-w-[60%] 
-                    break-words rounded-xl px-3 py-2 text-md 
-                    ${
-                      m.role === "user"
-                        ? "bg-zinc-900 text-white"
-                        : "border border-zinc-900 text-zinc-900"
-                    }`}
-                >
-                  {m.text}
-                </p>
-              </div>
-            ))}
-            <div ref={endRef} />
-          </div>
-          {loading ? <Skeleton className="h-10 w-[60%]" /> : <></>}
-        </ScrollArea>
+                {m.text}
+              </p>
+            </div>
+          ))}
+          {loading && <Skeleton className="h-10 w-[60%]" />}
+          <div ref={endRef} />
+        </div>
+      </ScrollArea>
 
-        <form onSubmit={handleSend} className="flex gap-3">
-          <Input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            className="flex-1 "
-            placeholder="Escreva sua mensagem..."
-            aria-label="Mensagem"
-          />
-          <Button disabled={loading} type="submit">
-            {loading ? <Loader2 className="animate-spin" /> : "Enviar"}
-          </Button>
-        </form>
-      </div>
+      {/* barra de input */}
+      <form
+        onSubmit={handleSend}
+        className="sticky bottom-0 flex justify-center items-center gap-3 p-4"
+      >
+        <Input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          className="flex-1 py-6 px-6 text-3xl"
+          placeholder="Escreva sua mensagem..."
+          aria-label="Mensagem"
+        />
+        <Button disabled={loading} type="submit">
+          {loading ? <Loader2 className="animate-spin" /> : "Enviar"}
+        </Button>
+      </form>
     </div>
   );
 }
