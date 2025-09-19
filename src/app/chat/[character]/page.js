@@ -13,7 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Loader2 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
-export default function Chat(props) {
+export default function AiChat(props) {
   const params = React.use(props.params);
   const character = params.character;
 
