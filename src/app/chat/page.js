@@ -1,3 +1,6 @@
+import charactersData from "@/data/charactersData.json";
+
+import Link from "next/link";
 import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,12 +10,12 @@ import {
   CardFooter,
   CardTitle,
 } from "@/components/ui/card";
-import charactersData from "@/data/charactersData.json";
+
 import { MessageCircleMore } from "lucide-react";
 
 export default function Chat() {
   return (
-    <div className="min-h-screen p-15 flex flex-col gap-12 max-w-7xl mx-auto w-full">
+    <div className="min-h-screen p-18 flex flex-col gap-12 max-w-7xl mx-auto w-full">
       <h1 className="text-4xl font-bold text-center mb-4">
         Converse com os personagens de Harry Potter! 🪄
       </h1>
@@ -29,9 +32,11 @@ export default function Chat() {
                   </p>
                 </CardContent>
                 <CardFooter className={"mt-auto w-full justify-end"}>
-                  <Button size="icon" variant="outline">
-                    <MessageCircleMore />
-                  </Button>
+                  <Link href={`/chat/${key}`}>
+                    <Button size="icon" variant="outline">
+                      <MessageCircleMore />
+                    </Button>
+                  </Link>
                 </CardFooter>
               </Card>
             );

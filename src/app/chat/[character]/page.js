@@ -10,8 +10,10 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { Loader2 } from "lucide-react";
+import { Loader2, MessageCircleMore } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
+import AiChats from "@/components/ai-chats";
+import Link from "next/link";
 
 export default function AiChat(props) {
   const params = React.use(props.params);
@@ -93,53 +95,74 @@ export default function AiChat(props) {
   }
 
   return (
-    <div className="relative min-h-screen mx-auto flex flex-col border rounded-xl">
-      {/* header */}
-      <h1 className="p-4 text-2xl font-bold border-b">Harry Potter 🪄✨</h1>
+    <div className="w-7xl min-h-screen mx-auto flex gap-5 justify-center p-10">
+      {/* Sidebar */}
+      <ScrollArea className="h-screen rounded-xl border">
+        <div className="p-5 grid gap-2">
+          {Object.keys(charactersData).map((character) => {
+            return (
+              <Link
+                href={`/chat/${character}`}
+                className="w-full"
+                key={character}
+              >
+                <Button variant={"outline"} className="w-full justify-start">
+                  <MessageCircleMore color="orange" />
+                  {charactersData[character].name}
+                </Button>
+              </Link>
+            );
+          })}
+        </div>
+      </ScrollArea>
 
-      {/* mensagens */}
-      <ScrollArea className="flex-1 p-4 pb-28">
-        <div className="space-y-4">
-          {messages.map((m) => (
-            <div
-              key={m.id}
-              className={`flex ${
-                m.role === "user" ? "justify-end" : "justify-start"
-              }`}
-            >
-              <p
-                className={`max-w-[85%] break-words rounded-xl px-4 py-2 text-md shadow-sm
+      <div className="relative min-h-screen flex flex-col border rounded-xl">
+        <h1 className="p-5 text-2xl font-bold border-b">Harry Potter 🪄✨</h1>
+
+        {/* mensagens */}
+        <ScrollArea className="flex-1 p-4 pb-28">
+          <div className="space-y-4">
+            {messages.map((m) => (
+              <div
+                key={m.id}
+                className={`flex ${
+                  m.role === "user" ? "justify-end" : "justify-start"
+                }`}
+              >
+                <p
+                  className={`max-w-[85%] break-words rounded-xl px-4 py-2 text-md shadow-sm
                   ${
                     m.role === "user"
                       ? "bg-zinc-900 text-white"
                       : "bg-zinc-100 text-zinc-900"
                   }`}
-              >
-                {m.text}
-              </p>
-            </div>
-          ))}
-          {loading && <Skeleton className="h-10 w-[60%]" />}
-          <div ref={endRef} />
-        </div>
-      </ScrollArea>
+                >
+                  {m.text}
+                </p>
+              </div>
+            ))}
+            {loading && <Skeleton className="h-10 w-[60%]" />}
+            <div ref={endRef} />
+          </div>
+        </ScrollArea>
 
-      {/* barra de input */}
-      <form
-        onSubmit={handleSend}
-        className="sticky bottom-0 flex justify-center items-center gap-3 p-4"
-      >
-        <Input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          className="flex-1 py-6 px-6 text-3xl"
-          placeholder="Escreva sua mensagem..."
-          aria-label="Mensagem"
-        />
-        <Button disabled={loading} type="submit">
-          {loading ? <Loader2 className="animate-spin" /> : "Enviar"}
-        </Button>
-      </form>
+        {/* barra de input */}
+        <form
+          onSubmit={handleSend}
+          className="sticky bottom-0 flex justify-center items-center gap-3 p-4"
+        >
+          <Input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            className="flex-1 py-6 px-6 text-3xl"
+            placeholder="Escreva sua mensagem..."
+            aria-label="Mensagem"
+          />
+          <Button disabled={loading} type="submit">
+            {loading ? <Loader2 className="animate-spin" /> : "Enviar"}
+          </Button>
+        </form>
+      </div>
     </div>
   );
 }
