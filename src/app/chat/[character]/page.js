@@ -95,32 +95,42 @@ export default function AiChat(props) {
   }
 
   return (
-    <div className="w-7xl min-h-screen mx-auto flex gap-5 justify-center p-10">
+    <div className="w-7xl min-h-screen mx-auto flex gap-5 p-5">
       {/* Sidebar */}
-      <ScrollArea className="h-screen rounded-xl border">
+      <ScrollArea className="h-[90vh] w-64 rounded-xl border">
         <div className="p-5 grid gap-2">
-          {Object.keys(charactersData).map((character) => {
-            return (
-              <Link
-                href={`/chat/${character}`}
-                className="w-full"
-                key={character}
-              >
-                <Button variant={"outline"} className="w-full justify-start">
-                  <MessageCircleMore color="orange" />
-                  {charactersData[character].name}
-                </Button>
-              </Link>
-            );
-          })}
+          {Object.keys(charactersData)
+            .sort((a, b) => (a === character ? -1 : b === character ? 1 : 0))
+            .map((key) => {
+              const isCurrent = key === character;
+              return (
+                <Link href={`/chat/${key}`} key={key}>
+                  <Button
+                    variant={isCurrent ? "default" : "outline"}
+                    className={`w-full justify-start ${
+                      isCurrent
+                        ? "bg-yellow-400 text-white hover:bg-yellow-300"
+                        : ""
+                    }`}
+                  >
+                    <MessageCircleMore color={isCurrent ? "white" : "orange"} />
+                    {charactersData[key].name}
+                  </Button>
+                </Link>
+              );
+            })}
         </div>
       </ScrollArea>
 
-      <div className="relative min-h-screen flex flex-col border rounded-xl">
-        <h1 className="p-5 text-2xl font-bold border-b">Harry Potter 🪄✨</h1>
+      {/* Chat */}
+      <div className="flex-1 flex flex-col h-[90vh] border rounded-xl overflow-hidden">
+        {/* Cabeçalho */}
+        <h1 className="p-5 text-2xl font-bold border-b flex-shrink-0">
+          {data.name}
+        </h1>
 
-        {/* mensagens */}
-        <ScrollArea className="flex-1 p-4 pb-28">
+        {/* Mensagens com Scroll */}
+        <ScrollArea className="flex-1 p-5">
           <div className="space-y-4">
             {messages.map((m) => (
               <div
@@ -130,11 +140,10 @@ export default function AiChat(props) {
                 }`}
               >
                 <p
-                  className={`max-w-[85%] break-words rounded-xl px-4 py-2 text-md shadow-sm
-                  ${
+                  className={`max-w-[85%] break-words rounded-xl px-4 py-2 text-md border ${
                     m.role === "user"
                       ? "bg-zinc-900 text-white"
-                      : "bg-zinc-100 text-zinc-900"
+                      : "border-yellow-200 bg-white text-zinc-900"
                   }`}
                 >
                   {m.text}
@@ -146,15 +155,15 @@ export default function AiChat(props) {
           </div>
         </ScrollArea>
 
-        {/* barra de input */}
+        {/* Barra de input */}
         <form
           onSubmit={handleSend}
-          className="sticky bottom-0 flex justify-center items-center gap-3 p-4"
+          className="flex gap-3 p-4 border-t bg-zinc-100 flex-shrink-0"
         >
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="flex-1 py-6 px-6 text-3xl"
+            className="flex-1 text-lg bg-card"
             placeholder="Escreva sua mensagem..."
             aria-label="Mensagem"
           />
